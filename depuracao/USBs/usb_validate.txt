@@ -1,0 +1,48 @@
+To validate USB, do as follows:
+
+1) Login, using SSH, in the board:
+   > ssh root@<ConnectCore IP Address>
+   If needed, to check the IP Address, use in the Putty terminal:
+   > ifconfig
+   
+   Read the IP address of the Ethernet interface and use the read IPV4 address.
+
+2) Issue the command:
+   > lsusb
+   
+   A list of two devices should return:
+
+   Bus 001 Device 002: ID 0424:2513  
+   Bus 001 Device 001: ID 1d6b:0002  
+      
+3) Connect a pendrive with a single partition in the first USB interface and issue the command:
+   > lsusb
+   
+   A list of 03 USB devices should return from this command. The connected USB pendrive should return with the above two devices.
+   
+4) Issue the command:
+   > cat /proc/partitions
+   
+   At the end of the return string, should appear two sda devices (Size value depends on the used pendrive capacity):
+   
+   8        0    3932160 sda
+   8        1    3932144 sda1
+
+   
+5) Use the command:
+   > mount /dev/sda1 /mnt
+   
+   The pendrive should be mounted in /mnt directory
+   
+6) Use the command to check if the pendrive content is available:
+   > ls /mnt
+   
+   The files and directories available and recorded in the used pendrive should be displayed. 
+   Does not use a blank pendrive in this test. Something must be stored in it.
+
+7) Umount the device.
+   > umount /mnt
+   
+Change the pendrive to the second USB connector and repeat the above sequence.
+
+# End of file

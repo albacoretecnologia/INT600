@@ -1,0 +1,87 @@
+To remote boot from DIGI, do as follows:
+
+Setup the computer environment and needed packtes with the instructions available in:
+
+http://cms.digi.com/resources/documentation/digidocs/embedded/dey/2.4/cc6/yocto_t_set-up-workstation.html#set-up-an-nfs-server
+
+To boot from remote server, after setup is done, follows the instructions available in
+
+http://cms.digi.com/resources/documentation/digidocs/embedded/dey/2.4/cc6/yocto_t_boot-images
+
+The steps are:
+
+---------------------------------------------------------------------------------------------------------
+If you want to make a copy of the older boot system, go to the backup directory and do the commands:
+
+1) Backup the /exports directory:
+
+> sudo tar -pcvzf exports.tar.gz /exports
+
+2) Backup the /tftpboot directory:
+
+> sudo tar -pcvzf tftpboot.tar.gz /tftpboot
+
+3) Clean old content of both directories
+
+cd /exports/nfsroot-ccimx6sbc/
+sudo rm -r *
+
+cd /tftpboot
+sudo rm -r *
+
+---------------------------------------------------------------------------------------------------------
+Pre-boot - prepare the content to boot in the computer correct directories:
+
+From /home/neimardu/workspace/ccimx6sbc/tmp/deploy/images/ccimx6sbc/ directory, do the following commands:
+
+1) sudo tar xvfp dey-image-qt-x11-ccimx6sbc.tar.bz2 -C /exports/nfsroot-ccimx6sbc
+   (Need to be done once only, unless more packets are added to the system)
+2) sudo cp zImage-ccimx6sbc.bin /tftpboot/image.bin (Select the correct .bin file)
+3) sudo cp zImage-imx6q-ccimx6sbc.dtb /tftpboot/image.dtb (Select the correct .dtb file)
+
+Once done the above steps, go to the module terminal and do:
+   
+1) Press reset button at the module.
+2) Stop U-Boot boot pressing any key after releasing the reset (Be quick to don't wait too long).
+2) Issue this sequence of commands in U-Boot command line:
+
+   => setenv autoload no
+   => dhcp
+   => setenv serverip 192.168.20.10 (Put here the correct tftp server IP address)
+   => setenv rootpath /exports/nfsroot-ccimx6sbc
+   => setenv fdt_file image.dtb    (Use the same dtb (.dtb) name you copied the image to at the server)
+   => setenv zimage image.bin      (Use the same image (.bin) name you copied the image to at the server) 
+   => saveenv
+ 
+3) Start a new boot
+
+   => dboot linux tftp
+   
+Raw sequence:
+===========================
+
+setenv autoload no
+dhcp
+setenv serverip 192.168.15.199
+setenv rootpath /exports/nfsroot-ccimx6sbc
+setenv fdt_file image.dtb
+setenv zimage image.bin
+saveenv
+dboot linux tftp
+
+===========================
+
+After saving the environment in FLASH once, the only commands needed are:
+
+Raw sequence:
+===========================
+
+dhcp
+setenv fdt_file image.dtb
+setenv zimage image.bin
+dboot linux tftp
+
+===========================
+
+
+End of file
