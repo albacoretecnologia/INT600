@@ -1,0 +1,60 @@
+From 43b6d173a2a292077db3c8718163f70a7aa1a2b0 Mon Sep 17 00:00:00 2001
+From: Fabio Estevam <festevam@gmail.com>
+Date: Sat, 14 Dec 2019 22:33:19 -0300
+Subject: [PATCH 4/4] ARM: dts: imx6q-ccimx6sbc: Let userspace control UART_PWR_EN
+
+For compatibility with the existing userpace used on Albacore board,
+let userspace control the UART_PWR_EN pin.
+
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+---
+ arch/arm/boot/dts/imx6qdl-ccimx6sbc.dtsi | 19 ++-----------------
+ 1 file changed, 2 insertions(+), 17 deletions(-)
+
+diff --git a/arch/arm/boot/dts/imx6qdl-ccimx6sbc.dtsi b/arch/arm/boot/dts/imx6qdl-ccimx6sbc.dtsi
+index 424a94b10448..2f4ec2545df0 100644
+--- a/arch/arm/boot/dts/imx6qdl-ccimx6sbc.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-ccimx6sbc.dtsi
+@@ -5,17 +5,6 @@
+ #include <dt-bindings/gpio/gpio.h>
+ 
+ / {
+-	reg_uart: regulator-uart {
+-		compatible = "regulator-fixed";
+-		regulator-name = "uart_pwr_en";
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&pinctrl_uart_pwr_en>;
+-		gpio = <&gpio2 26 GPIO_ACTIVE_HIGH>;
+-		enable-active-high;
+-		regulator-boot-on;
+-		regulator-always-on;
+-	};
+-
+ 	hdmi-out {
+ 		compatible = "hdmi-connector";
+ 		type = "a";
+@@ -374,6 +363,8 @@
+ 			MX6QDL_PAD_GPIO_18__GPIO7_IO13 0x80000000
+ 			/* EXP_GPIO_7 */
+ 			MX6QDL_PAD_GPIO_19__GPIO4_IO05 0x80000000
++			/* UART_EN */
++			MX6QDL_PAD_EIM_RW__GPIO2_IO26 0x80000000
+ 		>;
+ 	};
+ 
+@@ -502,12 +493,6 @@
+ 		>;
+ 	};
+ 
+-	pinctrl_uart_pwr_en: uartpwrengrp {
+-		fsl,pins = <
+-			MX6QDL_PAD_EIM_RW__GPIO2_IO26		0xb0b1
+-		>;
+-	};
+-
+ 	pinctrl_usdhc2: usdhc2grp {
+ 		fsl,pins = <
+ 			MX6QDL_PAD_SD2_CMD__SD2_CMD		0x17071
+-- 
+2.17.1
+
